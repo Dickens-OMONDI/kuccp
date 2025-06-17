@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>KUCCPS Application Portal</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #f9f9f9;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      max-width: 400px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 12px;
+    }
+    .hidden {
+      display: none;
+    }
+    #timer {
+      text-align: center;
+      color: darkgreen;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN FORM WITH TIMER -->
+<div class="container" id="login-form">
+  <h2>KUCCPS Login</h2>
+  <div id="timer">Registration closes in: <span id="countdown"></span></div>
+  <input type="text" id="name" placeholder="Enter Full Name">
+  <input type="text" id="year" placeholder="KCSE Year (e.g. 2023)">
+  <input type="password" id="password" placeholder="Enter Password">
+  <button onclick="login()">Login</button>
+</div>
+
+<!-- MULTI-STEP SURVEY FORMS -->
+<div class="container hidden" id="form1">
+  <h2>Step 1 of 5</h2>
+  <label>1. Preferred Course:</label>
+  <input type="text" id="course">
+  <label>2. where do you see yourself after graduation:</label>
+  <input type="text" id="county">
+  <label>3. iwhat motivate you to succed in your exams:</label>
+  <input type="text" id="county">
+  <label>3. how do you plan to contribute to college after admision:</label>
+  <input type="text" id="county">
+  <button onclick="nextForm('form1','form2')">Next</button>
+</div>
+
+<div class="container hidden" id="form2">
+  <h2>Step 2 of 5</h2>
+  <label>2. Preferred University/College:</label>
+  <input type="text" id="college">
+  <button onclick="nextForm('form2','form3')">Next</button>
+</div>
+
+<div class="container hidden" id="form3">
+  <h2>Step 3 of 5</h2>
+  <label>3. Have you applied before?</label>
+  <select id="appliedBefore">
+    <option value="No">No</option>
+    <option value="Yes">Yes</option>
+  </select>
+  <button onclick="nextForm('form3','form4')">Next</button>
+</div>
+
+<div class="container hidden" id="form4">
+  <h2>Step 4 of 5</h2>
+  <label>4. Do you require government sponsorship?</label>
+  <select id="sponsorship">
+    <option value="Yes">Yes</option>
+    <option value="No">No</option>
+  </select>
+  <button onclick="nextForm('form4','form5')">Next</button>
+</div>
+
+<div class="container hidden" id="form5">
+  <h2>Step 5 of 5</h2>
+  <label>1. Region Preference:</label>
+  <select id="region">
+    <option value="Nairobi">Nairobi</option>
+    <option value="Western">Western</option>
+    <option value="Central">Central</option>
+    <option value="Nyanza">Nyanza</option>
+    <option value="Coast">Coast</option>
+    <option value="Eastern">Eastern</option>
+  </select>
+  <label>2. what is name of your village:</label>
+  <input type="text" id="village">
+  <label>3. in which county is your place of origin:</label>
+  <input type="text" id="county">
+  <label>4. name neaby primary school:</label>
+  <input type="text" id="county">
+  <label>5. name neaby secondary school:</label>
+  <input type="text" id="county">
+  <label>6. what are the main economic activities in your area:</label>
+  <input type="text" id="county">
+  <label>7. are there enough schools in your area:</label>
+  <input type="text" id="county">
+  <label>8. how do most students in your area acess higher education:</label>
+  <input type="text" id="county">
+  <label>9. what is the common mode of transport used:</label>
+  <input type="text" id="county">
+  <label>10. how do people from your area support each other in time of need:</label>
+  <input type="text" id="county">
+  <button onclick="submitSurvey()">Submit Application</button>
+</div>
+
+<script>
+  // Fake user records
+  const users = [
+    { name: "Faith Achieng", year: "2023", password: "ach123" },
+    { name: "John Otieno", year: "2022", password: "john2022" },
+    { name: "Mercy Mwangi", year: "2021", password: "mercyM" },
+    { name: "Kevin Kiptoo", year: "2022", password: "kkip" },
+    { name: "Lilian Wanjiru", year: "2023", password: "lily23" },
+    { name: "Brian Ouma", year: "2021", password: "brian321" },
+    { name: "Daisy Naliaka", year: "2020", password: "daisyN" },
+    { name: "George Kariuki", year: "2022", password: "gkariuki" },
+    { name: "Sharon Njeri", year: "2023", password: "shazzy" },
+    { name: "Patrick Odhiambo", year: "2021", password: "pato21" }
+  ];
+
+  // Countdown timer
+  const deadline = new Date("June 30, 2025 23:59:59").getTime();
+  const countdownEl = document.getElementById("countdown");
+
+  setInterval(() => {
+    const now = new Date().getTime();
+    const remaining = deadline - now;
+
+    if (remaining <= 0) {
+      countdownEl.innerText = "Registration Closed";
+      return;
+    }
+
+    const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+
+    countdownEl.innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+  }, 1000);
+
+  // Login function
+  function login() {
+    const name = document.getElementById("name").value.trim().toLowerCase();
+    const year = document.getElementById("year").value.trim();
+    const password = document.getElementById("password").value.trim();
+
+    const found = users.find(u =>
+      u.name.toLowerCase() === name &&
+      u.year === year &&
+      u.password === password
+    );
+
+    if (found) {
+      alert("Login successful!");
+      document.getElementById("login-form").classList.add("hidden");
+      document.getElementById("form1").classList.remove("hidden");
+    } else {
+      alert("Invalid credentials!");
+    }
+  }
+
+  // Navigate to next form
+  function nextForm(currentId, nextId) {
+    document.getElementById(currentId).classList.add("hidden");
+    document.getElementById(nextId).classList.remove("hidden");
+  }
+
+  // Submit final data
+  function submitSurvey() {
+    const course = document.getElementById("course").value;
+    const college = document.getElementById("college").value;
+    const appliedBefore = document.getElementById("appliedBefore").value;
+    const sponsorship = document.getElementById("sponsorship").value;
+    const region = document.getElementById("region").value;
+
+    console.log("Submitted Data:", {
+      course, college, appliedBefore, sponsorship, region
+    });
+
+    alert("Your application has been submitted successfully!");
+    // Optionally reset or redirect here
+  }
+</script>
+</body>
+</html>
